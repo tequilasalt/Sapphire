@@ -1,0 +1,94 @@
+﻿{
+    "GatewayIp": "192.168.2.35",
+    "GatewayPort": "20000",
+    "Devices": [
+        /*{
+            "label": "Light 21 ON-OFF",
+            "format": "*1*<modbus>*<where>##",
+            "where": "21",
+            "modbusType": "coil",
+            "modbusIndex": "1"
+        },
+        {
+            "label": "Light 22 ON-OFF",
+            "format": "*1*<modbus>*<where>##",
+            "where": "22",
+            "modbusType": "coil",
+            "modbusIndex": "2"
+        },
+        {
+            "label": "Light 23 ON-OFF",
+            "format": "*1*<modbus>*<where>##",
+            "where": "23",
+            "modbusType": "coil",
+            "modbusIndex": "3"
+        },
+        {
+            "label": "Light 24 ON-OFF",
+            "format": "*1*<modbus>*<where>##",
+            "where": "24",
+            "modbusType": "coil",
+            "modbusIndex": "4"
+        },
+        {
+            "label": "Zone 1 Thermometer",
+            "format": "*#4*<where>*0*<modbus>##",
+            "where": "1",
+            "modbusType": "register",
+            "modbusIndex": "1",
+            "selfInvokeParam": "0" 
+        }*/
+        {
+            "label": "Light 12 ON-OFF-DIMM",
+            "format": "*1*<modbus>*<where>##",
+            "where": "12",
+            "modbusType": "register",
+            "modbusIndex": "1"
+        },
+        {
+            "label": "Light 34 ON-OFF",
+            "format": "*1*<modbus>*<where>##",
+            "where": "34",
+            "modbusType": "coil",
+            "modbusIndex": "1"
+        },
+        {
+            "label": "Light 41 ON-OFF",
+            "format": "*1*<modbus>*<where>##",
+            "where": "34",
+            "modbusType": "coil",
+            "modbusIndex": "2"
+        },
+        //Zone 1
+        {
+            "label": "Zone 1 Thermometer",
+            "format": "*#4*<where>*0*<modbus>##",
+            "where": "1",
+            "modbusType": "register",
+            "modbusIndex": "4",
+            "selfInvokeParam": "0"
+        },
+        {
+            "label": "Zone 1 Setpoint",
+            "format": "*#4*<where>*12*0<modbus>*3##",
+            "where": "1",
+            "modbusType": "register",
+            "modbusIndex": "5"
+        },
+        {
+            "label": "Zone 1 Expected",
+            "format": "*#4*<where>*14*0<modbus>*3##",
+            "where": "1",
+            "modbusType": "register",
+            "modbusIndex": "6"
+        },
+        {
+            "label": "Zone 1 Knob Value",
+            "format": "*#4*<where>*13*<modbus>##",
+            "where": "1",
+            "modbusType": "register",
+            "modbusIndex": "7"
+        }
+        //
+    ]
+}
