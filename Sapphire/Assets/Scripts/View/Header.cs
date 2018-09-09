@@ -11,12 +11,19 @@ public class Header:AbstractViewElement {
 
         _header = UIFactory.GetText(RectTransform, new Vector2(480, 140), 30, Color.gray, TextAnchor.MiddleCenter, false, "ExoBold");
         _header.supportRichText = true;
-        _header.text = "Connection Status: <color=#FF7373>NONE</color>";
+        
+        SetConnected();
 
     }
 
-    public void SetConnected() {
-        _header.text = "Connection Status: <color=#2DB200>ON-LINE</color>";
+    public void SetConnected(bool val = true) {
+
+
+        if (val) {
+            _header.text = "Connection Status: <color=#2DB200>ON-LINE</color>";
+        } else {
+            _header.text = "Connection Status: <color=#FF7373>NONE</color>";
+        }
     }
 }
 

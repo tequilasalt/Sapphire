@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using EasyModbus;
 using OpenWebNet;
 using SimpleJSON;
+using UnityEditor;
 using UnityEngine;
 
 public class AppController : MonoBehaviour {
@@ -43,12 +44,30 @@ public class AppController : MonoBehaviour {
 
     void Update() {
 
-        if (!_allConnected && _node != null) {
+        /*if (!_allConnected && _node != null) {
 
             if (_command.IsConnected && _monitor.IsConnected) {
                 StartListen();
+            } else {
+                _header.SetConnected(false);
             }
 
+        }*/
+
+        if (_node != null) {
+            if (_monitor.IsConnected) {
+
+                if (!_allConnected) {
+                    _allConnected = true;
+                    StartListen();
+                }
+
+                _header.SetConnected();
+
+            } else {
+                _header.SetConnected(false);
+                _allConnected = false;
+            }
         }
 
     }
@@ -56,8 +75,6 @@ public class AppController : MonoBehaviour {
     private void StartListen() {
         _allConnected = true;
         
-        _header.SetConnected();
-
         foreach (KeyValuePair<string, List<Action>> actionPair in _actions) {
 
             foreach (var action in actionPair.Value) {
@@ -72,8 +89,7 @@ public class AppController : MonoBehaviour {
     private void OnLoad(LoadRequest r, string error) {
 
         var node = JSON.Parse(r.Text);
-
-        _command = new EthGateway(node["GatewayIp"].Value, node["GatewayPort"].AsInt, OpenSocketType.Command);
+       
         _monitor = new EthGateway(node["GatewayIp"].Value, node["GatewayPort"].AsInt, OpenSocketType.Monitor);
 
         _server = new ModbusServer();
@@ -96,25 +112,32 @@ public class AppController : MonoBehaviour {
             
         }
         
-        _command.Connect();
+        //_command.Connect();
         _monitor.Connect();
 
         _monitor.MessageReceived += (sender, e) => {
             
             Message message = MessageAnalyzer.GetMessage(e.Data);
-            
-            Debug.Log("OnMessage: "+e.Data);
+            Debug.Log("OnMessage: " + e.Data + ":" + message);
 
-            if (_actions.ContainsKey(message.Where)) {
+            if (message != null) {
 
-                foreach (var action in _actions[message.Where]) {
-                    action.UpdateDevice(e.Data);
+                if (_actions.ContainsKey(message.Where)) {
+
+                    foreach (var action in _actions[message.Where]) {
+                        action.UpdateDevice(e.Data);
+
+                    }
+
                 }
-                
             }
 
-        }; 
-        
+        };
+
+        _monitor.ConnectionError += (sender, args) => {
+            Debug.Log(args.Exception);
+        };
+
         _server.Listen();
 
         _server.CoilsChanged += new ModbusServer.CoilsChangedHandler(CoilsChanged);
@@ -159,9 +182,38 @@ public class AppController : MonoBehaviour {
 
         }
     }
-    
+
     public void SendCommand(string command) {
-        _command.SendData(command);
+        //_command.SendData(command);
+
+
+        if (_command == null) {
+            _command = new EthGateway(_node["GatewayIp"].Value, _node["GatewayPort"].AsInt, OpenSocketType.Command);
+        }
+
+        if (!_command.IsConnectedToGateway) {
+
+            _command.Connected += delegate(object sender, EventArgs args) {
+
+                Debug.Log("Send Command:" + command);
+
+                _command.SendData(command);
+
+            };
+
+            _command.Disconnected += delegate(object sender, EventArgs args) {
+
+                Debug.Log("onDisconnect");
+
+                _command = null;
+            };
+
+            _command.Connect();
+
+        } else {
+            _command.SendData(command);
+        }
+
     }
 
     public void SendBraodcastModbus(int index, bool coil, int data) {
@@ -173,6 +225,7 @@ public class AppController : MonoBehaviour {
             
         } else {
             _server.holdingRegisters[index] = (Int16)data;
+            
         }
 
     }

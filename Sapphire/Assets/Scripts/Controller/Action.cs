@@ -42,23 +42,26 @@ public class Action {
 
     public void UpdateDevice(string value) {
 
-        //Debug.Log(value);
+        Debug.Log(value);
 
         value = value.Replace(_splittedFormat[0], "");
         value = value.Replace(_splittedFormat[1], "");
 
-        //Debug.Log(_splittedFormat[0]+":"+ _splittedFormat[1]);
+        Debug.Log(_splittedFormat[0]+":"+ _splittedFormat[1]);
 
-        if (value.IndexOf("*") > 0 || value.IndexOf("#") > 0) {
-            //Debug.Log(value + "-----");
+        if (value.IndexOf("*") > -1 || value.IndexOf("#") > -1) {
+            Debug.Log(value + "-----");
             return;
         }
-        
+        Debug.Log("-------"+value);
+
         int val = int.Parse(value);
 
         if (_lastValue != int.MaxValue && _lastValue == val) {
             return;
         }
+
+        Debug.Log("Update by device"+_where);
 
         _lastValue = val;
 
@@ -70,6 +73,8 @@ public class Action {
         if (_lastValue != int.MaxValue && _lastValue == value) {
             return;
         }
+
+        Debug.Log("Update by modbus:" + value);
 
         _lastValue = value;
 
